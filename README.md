@@ -1,120 +1,99 @@
-🎬 Movie Development Copilot
+# 🎬 Movie Development Copilot  
+### Data-Driven Decision Support for Independent Film Producers
 
-Data-Driven Decision Support for Independent Producers
+---
 
-📌 Overview
+## 🚩 The Greenlight Problem
 
-Movie Development Copilot is an autonomous AI agent designed to support independent film producers in high-stakes "greenlight" decisions.
+Film development decisions are high-risk and often intuition-driven.
 
-The system transforms a creative idea (logline + genre + budget constraints) into actionable production intelligence:
+Independent producers lack:
+- Reliable budget benchmarks  
+- Historical ROI validation  
+- Structured comparable film analysis  
+- Data-backed talent recommendations  
 
-Comparable films (comps)
+Creative vision exists.  
+Production intelligence is missing.
 
-Budget feasibility analysis
+---
 
-ROI benchmarking
+## 💡 Our Solution
 
-Talent recommendations
+**Movie Development Copilot** is an autonomous AI agent that transforms a creative concept into structured production intelligence.
 
-Production-level insights
+Input:
+> Logline + Genre + Budget Constraints  
 
-It bridges the gap between creative vision and economic reality.
+Output:
+- 🎥 Comparable Films (Comps)  
+- 💰 Budget Feasibility Analysis  
+- 📈 ROI Probability Benchmarking  
+- 🎬 Talent Shortlist Recommendations  
+- 📄 Structured Production Report  
 
-🎯 The Problem
+---
 
-Film greenlighting decisions are:
+# 🧠 System Architecture
 
-High financial risk
+The agent follows a four-module architecture:
 
-Often intuition-driven
+### 1️⃣ Intelligent Intent  
+Extracts:
+- Genre  
+- Themes  
+- Budget tier  
+- Production signals  
 
-Based on scattered data
+---
 
-Lacking centralized intelligence
+### 2️⃣ Semantic Retrieval  
+Uses Pinecone vector search to retrieve:
+- 10–20 historically similar films  
+- Genre-aligned comps  
+- Budget-tier matches  
 
-Producers struggle with:
+---
 
-No realistic budget benchmarks
+### 3️⃣ Predictive Core  
+Performs deterministic analysis (code-based, not LLM):
 
-No historical ROI guidance
+- Budget validation vs historical distribution  
+- Revenue percentile analysis  
+- ROI benchmarking  
 
-Subjective talent selection
+---
 
-Unclear genre viability
-
-💡 Our Solution
-
-A modular AI agent that:
-
-Analyzes semantic intent of the user idea
-
-Retrieves historical comparable films
-
-Performs budget validation
-
-Recommends proven production talent
-
-Synthesizes everything into a structured production report
-
-🧠 System Architecture
-
-The system follows a four-stage AI pipeline:
-
-Intelligent Intent Module
-Extracts genre, themes, constraints, and production signals from the prompt.
-
-Semantic Retrieval Module
-Retrieves historically similar films from vector database (Pinecone).
-
-Predictive Core Module
-Performs:
-
-Budget sanity check
-
-ROI estimation
-
-Historical performance analysis
-
-Dynamic Synthesis Module
+### 4️⃣ Dynamic Synthesis  
 Generates a structured, investor-ready production intelligence report.
 
-All module names are consistent across:
+---
 
-Architecture diagram
-
-/api/execute steps logging
-
-Documentation
-
-🗂 Data Sources
+# 📊 Data Foundation
 
 Primary dataset:
+- **The Movies Dataset (Kaggle)**  
+  - Metadata  
+  - Cast & Crew  
+  - Genres & Keywords  
+  - Budget & Revenue  
+  - Ratings  
 
-The Movies Dataset (Kaggle)
+Infrastructure:
+- Supabase (primary DB)
+- Pinecone (vector retrieval)
+- LLMod.ai (LLM provider)
+- Render (deployment)
 
-Metadata
+---
 
-Cast & crew
+# 🔌 API Specification
 
-Keywords
-
-Genres
-
-Budget & revenue
-
-Ratings
-
-Database stack:
-
-Supabase (primary relational storage)
-
-Pinecone (vector search for semantic retrieval)
-
-🚀 API Endpoints
-1️⃣ GET /api/team_info
+## ✅ GET `/api/team_info`
 
 Returns team metadata.
 
+```json
 {
   "group_batch_order_number": "3_9",
   "team_name": "Movie Development Copilot",
@@ -124,261 +103,3 @@ Returns team metadata.
     { "name": "Student C", "email": "c@..." }
   ]
 }
-
-2️⃣ GET /api/agent_info
-
-Returns agent metadata and usage instructions.
-
-Includes:
-
-Description
-
-Purpose
-
-Prompt template
-
-Full example prompt + response
-
-Full step trace example
-
-3️⃣ GET /api/model_architecture
-
-Returns a PNG architecture diagram.
-
-Content-Type:
-
-image/png
-
-
-Modules displayed:
-
-Intelligent Intent
-
-Semantic Retrieval
-
-Predictive Core
-
-Dynamic Synthesis
-
-4️⃣ POST /api/execute
-
-Main execution endpoint.
-
-Request
-{
-  "prompt": "Thriller about a detective repeating the same night to stop an attack. Budget: $12M."
-}
-
-Success Response
-{
-  "status": "ok",
-  "error": null,
-  "response": "...final structured report...",
-  "steps": [
-    {
-      "module": "Intelligent Intent",
-      "prompt": {...},
-      "response": {...}
-    },
-    {
-      "module": "Semantic Retrieval",
-      "prompt": {...},
-      "response": {...}
-    }
-  ]
-}
-
-Error Response
-{
-  "status": "error",
-  "error": "Human-readable error description",
-  "response": null,
-  "steps": []
-}
-
-🔍 Step Logging (Required Traceability)
-
-Each LLM call is logged with:
-
-{
-  "module": "Module Name",
-  "prompt": {},
-  "response": {}
-}
-
-
-This ensures:
-
-Full transparency
-
-Architectural consistency
-
-Reproducibility
-
-Debug capability
-
-🖥 Frontend / GUI
-
-Minimal web UI includes:
-
-Textarea for user prompt
-
-"Run Agent" button
-
-Final structured response display
-
-Full steps trace display
-
-Optional:
-
-Conversation memory
-
-Follow-up prompts
-
-The UI is focused on:
-
-Clarity
-
-Execution transparency
-
-Step inspection
-
-⚙️ Optimization Strategy
-
-To meet the $13 LLMod.ai budget:
-
-Avoid unnecessary LLM calls
-
-Use pre-aggregated financial statistics
-
-Perform numeric analysis in code (not LLM)
-
-Use embeddings only for retrieval
-
-Keep prompt context minimal
-
-AI is used only for:
-
-Semantic reasoning
-
-Narrative synthesis
-
-All calculations are deterministic and code-based.
-
-📊 Core Capabilities
-🎥 Comp Finder
-
-Finds 10–20 historically similar films using:
-
-Genre clustering
-
-Keyword overlap
-
-Semantic similarity
-
-💰 Budget Sanity Check
-
-Validates:
-
-Historical budget range
-
-Revenue distribution
-
-ROI percentile
-
-🎬 Talent Shortlist
-
-Recommends:
-
-Directors
-
-Cinematographers
-
-Editors
-
-Based on:
-
-Budget tier success
-
-Genre alignment
-
-Historical ROI performance
-
-🧪 Demo Example
-
-User Prompt:
-
-Thriller about a detective repeating the same night to stop an attack. Budget: $12M.
-
-Agent Output:
-
-Comparable Films:
-
-Source Code
-
-Edge of Tomorrow
-
-Budget Analysis:
-
-Validated
-
-Historical ROI ~150%
-
-Talent Recommendations:
-
-Mid-budget sci-fi experienced director
-
-DoP with proven $10–15M success
-
-🛠 Deployment
-
-Platform:
-
-Render
-
-Database:
-
-Supabase
-
-Pinecone
-
-LLM Provider:
-
-LLMod.ai
-
-Each group uses:
-
-Shared group API key
-
-Strict cost control
-
-📈 Roadmap
-Phase 1 (Current)
-
-Intelligent comp analysis
-
-Budget validation
-
-Phase 2
-
-Revenue prediction ML models
-
-Phase 3
-
-End-to-end production intelligence platform
-
-📦 Submission
-
-Render URL:
-{your render url}
-
-GitHub Repository:
-{your repo url}
-
-👩‍💻 Course Project
-
-Built as part of:
-
-Autonomous AI Agents Course
-Instructor: Idan Hahn
-Deadline: 01/03/2026
