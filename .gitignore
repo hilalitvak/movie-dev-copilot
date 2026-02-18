@@ -1,0 +1,45 @@
+# ======================
+# Python
+# ======================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# ======================
+# Environment variables
+# ======================
+.env
+.env.*
+*.env
+
+# ======================
+# Data files (raw + processed)
+# ======================
+data/raw/
+data/processed/
+*.csv
+*.parquet
+
+# ======================
+# Logs
+# ======================
+*.log
+
+# ======================
+# IDE / Editor
+# ======================
+.vscode/
+.idea/
+
+# ======================
+# OS files
+# ======================
+.DS_Store
+Thumbs.db
