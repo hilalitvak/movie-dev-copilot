@@ -1,14 +1,19 @@
 import json 
 import numpy as np
 from dotenv import load_dotenv
-load_dotenv()
+from pathlib import Path
+import os
+
+# load .env from backend folder
+env_path = Path(__file__).resolve().parents[1] / ".env"
+load_dotenv(env_path)
 from fastapi import FastAPI
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel
-from pathlib import Path
 from starlette.responses import Response
 from backend.app.agent.retrieval import retrieve_comps
 from backend.app.agent.predictive import top_buckets_by_count
+from backend.app.agent.rag_llm import pinecone_query, generate_report
 
 app = FastAPI()
 
@@ -125,8 +130,70 @@ def execute(payload: ExecuteIn):
             lines.append(
                 f"- {b.bucket}: median ROI={b.median:.2f} (IQR {b.p25:.2f}-{b.p75:.2f}), n={b.count}"
             )
+        
+        # -------- RAG context from Pinecone --------
+        rag_matches = []
+        rag_error = None
+        try:
+            rag_matches = pinecone_query(prompt, top_k=6)
+        except Exception as e:
+            rag_error = str(e)
+            rag_matches = []
 
-        report_text = "\n".join(lines)
+        context_lines = []
+        for m in rag_matches:
+            md = (m.get("metadata") or {})
+            title = md.get("title") or "Unknown"
+            director = md.get("director") or ""
+            roi = md.get("roi")
+            budget = md.get("budget")
+            score = m.get("score")
+
+            bits = [f"- {title}"]
+            if director:
+                bits.append(f"(Director: {director})")
+            if isinstance(score, (int, float)):
+                bits.append(f"[sim={score:.3f}]")
+            if isinstance(roi, (int, float)):
+                bits.append(f"ROI={roi:.2f}")
+            if isinstance(budget, (int, float)):
+                bits.append(f"Budget=${budget:,.0f}")
+
+            context_lines.append(" ".join(bits))
+
+        system_prompt = (
+            "You are a movie development assistant. "
+            "Write a concise production-style report using the provided comparable films and ROI benchmarks. "
+            "Do not invent numbers. If data is missing, say it is missing."
+        )
+
+        roi_bench_lines = [
+            f"- {b.bucket}: median={b.median:.2f}, IQR={b.p25:.2f}-{b.p75:.2f}, n={b.count}"
+            for b in buckets
+        ]
+
+        user_prompt = (
+            f"Prompt:\n{prompt}\n\n"
+            f"Top retrieved comps (RAG):\n"
+            f"{chr(10).join(context_lines) if context_lines else 'No RAG comps available.'}\n\n"
+            f"ROI benchmarks by bucket:\n{chr(10).join(roi_bench_lines)}\n\n"
+            "Return sections:\n"
+            "1) Logline interpretation (1-2 sentences)\n"
+            "2) Comparable films (bullet list)\n"
+            "3) Budget/ROI notes (short)\n"
+            "4) Risks & assumptions (short)\n"
+        )
+
+        llm_text = None
+        llm_error = None
+        try:
+            llm_text = (generate_report(system_prompt, user_prompt) or "").strip()
+        except Exception as e:
+            llm_error = str(e)
+            llm_text = None
+
+        base_text = "\n".join(lines)
+        report_text = (llm_text + "\n\n---\n\n" + base_text) if llm_text else base_text
 
         return json_utf8({
             "status": "ok",
@@ -136,8 +203,13 @@ def execute(payload: ExecuteIn):
             "comps": comps,
             "roi_known": roi_known,
             "roi_total": roi_total,
-            "comps_median_roi": comps_median_roi,
+            "rag_count": len(rag_matches),
+            "rag_error": rag_error,
+            "llm_error": llm_error,
         })
-
+    
     except Exception as e:
-        return json_utf8({"status": "error", "error": str(e), "response": None, "steps": []}, 500)
+            return json_utf8(
+                {"status": "error", "error": str(e), "response": None, "steps": []},
+                500
+            )
