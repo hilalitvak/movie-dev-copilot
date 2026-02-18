@@ -1,12 +1,13 @@
 import json 
 import numpy as np
-from dotenv import load_dotenv
 from pathlib import Path
 import os
+from pathlib import Path
+from dotenv import load_dotenv
 
-# load .env from backend folder
-env_path = Path(__file__).resolve().parents[1] / ".env"
-load_dotenv(env_path)
+BACKEND_DIR = Path(__file__).resolve().parents[1]  # backend/
+load_dotenv(BACKEND_DIR / ".env")
+
 from fastapi import FastAPI
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel

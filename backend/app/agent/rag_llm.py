@@ -55,7 +55,7 @@ def generate_report(system_prompt: str, user_prompt: str) -> str:
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
         ],
-        temperature=0.2,
+        
     )
     return resp.choices[0].message.content or ""
 
