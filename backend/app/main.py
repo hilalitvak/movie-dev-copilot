@@ -4,9 +4,10 @@ from pathlib import Path
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from dotenv import dotenv_values
 
 BACKEND_DIR = Path(__file__).resolve().parents[1]  # backend/
-load_dotenv(BACKEND_DIR / ".env")
+load_dotenv(BACKEND_DIR / ".env", override=True)
 
 from fastapi import FastAPI
 from fastapi.responses import FileResponse, JSONResponse
