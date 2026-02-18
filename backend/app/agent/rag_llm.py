@@ -65,10 +65,11 @@ def generate_report(system_prompt: str, user_prompt: str) -> str:
 # ------------------------
 
 def pinecone_index():
+    print("DEBUG PINECONE_INDEX raw =", os.getenv("PINECONE_INDEX"))
+    print("DEBUG PINECONE_API_KEY exists =", bool(os.getenv("PINECONE_API_KEY")))
     pc = Pinecone(api_key=_require_env("PINECONE_API_KEY"))
     index_name = _require_env("PINECONE_INDEX")
     return pc.Index(index_name)
-
 
 def pinecone_query(query: str, top_k: int = 8) -> List[Dict[str, Any]]:
     index = pinecone_index()
@@ -81,4 +82,9 @@ def pinecone_query(query: str, top_k: int = 8) -> List[Dict[str, Any]]:
         include_metadata=True,
         namespace=namespace,
     )
-    return result.get("matches", [])
+
+    # Works for both dict-like and object-like responses
+    matches = getattr(result, "matches", None)
+    if matches is None and isinstance(result, dict):
+        matches = result.get("matches", [])
+    return matches or []
