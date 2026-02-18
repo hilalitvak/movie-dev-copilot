@@ -10,6 +10,7 @@ from typing import Any, Dict, List
 import numpy as np
 from dotenv import load_dotenv
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from starlette.responses import Response
@@ -28,6 +29,13 @@ load_dotenv(BACKEND_DIR / ".env", override=True)
 # app
 # ----------------------------
 app = FastAPI()
+FRONTEND_DIR = BACKEND_DIR.parent / "frontend"  # C:\dev\movie-dev-copilot\frontend
+
+app.mount("/static", StaticFiles(directory=str(FRONTEND_DIR)), name="static")
+
+@app.get("/")
+def serve_frontend():
+    return FileResponse(str(FRONTEND_DIR / "index.html"))
 
 STATIC_PATH = Path(__file__).parent / "static"
 ARCH_FILE = STATIC_PATH / "architecture.png"
