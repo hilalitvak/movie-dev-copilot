@@ -81,25 +81,31 @@ def team_info():
         "group_batch_order_number": "3_9",
         "team_name": "Movie Development Copilot",
         "students": [
-            {"name": "Maayan", "email": "maayan.sadeh@campus.technion.ac.il"},
-            {"name": "Hila", "email": "hila.litvak@campus.technion.ac.il"},
-            {"name": "Yanis", "email": "Yanisp@campus.technion.ac.il"},
+            {"name": "Maayan sadeh", "email": "maayan.sadeh@campus.technion.ac.il"},
+            {"name": "Hila Litvak", "email": "hila.litvak@campus.technion.ac.il"},
+            {"name": "Yanis papismedov", "email": "Yanisp@campus.technion.ac.il"},
         ],
     }
 
 @app.get("/api/agent_info")
 def agent_info():
     return {
-        "description": "Movie Development Copilot that generates a production report from a logline, genre and budget.",
-        "purpose": "Find comps, sanity-check budget and estimate ROI.",
-        "prompt_template": {"template": "Logline: {logline}, Genre: {genre}, Budget: {budget}"},
+        "description": "AI agent that analyzes a movie concept and generates a production intelligence report using comparable films and ROI benchmarks.",
+        "purpose": "Help independent film producers evaluate the feasibility of a project using historical movie data and AI synthesis.",
+        "prompt_template": {
+            "template": "{prompt}"
+        },
         "prompt_examples": [
             {
-                "prompt": "Logline: A detective loses memory while chasing a killer. Genre: Thriller. Budget: 12M",
-                "full_response": "Example production report…",
-                "steps": [],
+                "prompt": "Thriller about a detective repeating the same night to stop an attack. Budget: $12M",
+                "full_response": "Production Report\n1) Logline interpretation\nA high-concept time-loop thriller about a detective reliving the same night to stop an imminent attack.\n\n2) Comparable films\nPredestination, Timecrimes, Groundhog Day, Looper.\n\n3) Budget / ROI\nProjects in the $5–15M range have median ROI ≈1.82.\n\n4) Risks\nNiche concept, marketing dependency, distribution strategy.",
+                "steps": [
+                    {"module": "retrieval_local_comps"},
+                    {"module": "rag_pinecone"},
+                    {"module": "llm_report"}
+                ]
             }
-        ],
+        ]
     }
 
 @app.get("/api/model_architecture")
