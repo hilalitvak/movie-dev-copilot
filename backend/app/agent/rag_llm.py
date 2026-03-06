@@ -1,3 +1,4 @@
+# rag_llm.py
 from __future__ import annotations
 
 import os
@@ -69,10 +70,68 @@ def pinecone_index():
     index_name = _require_env("PINECONE_INDEX")
     return pc.Index(index_name)
 
+def build_rag_query(query: str) -> str:
+    q = (query or "").lower()
+
+    extras = []
+
+    if "repeat" in q or "repeating" in q or "same night" in q or "time loop" in q:
+        extras.extend([
+            "time loop",
+            "repeating night",
+            "repeating day",
+            "temporal loop",
+            "time travel thriller",
+            "loop thriller",
+            "high concept thriller",
+        ])
+
+    if "detective" in q:
+        extras.extend([
+            "detective",
+            "investigation",
+            "procedural thriller",
+            "crime mystery",
+        ])
+
+    if "attack" in q or "prevent" in q or "stop" in q:
+        extras.extend([
+            "prevent attack",
+            "stop catastrophe",
+            "race against time",
+            "urgent countdown",
+        ])
+
+    if "thriller" in q:
+        extras.extend([
+            "thriller",
+            "suspense",
+            "mystery thriller",
+        ])
+
+    if "budget" in q or "$" in q:
+        extras.extend([
+            "mid budget film",
+            "commercial genre film",
+        ])
+
+    if not extras:
+        return query
+
+    return (
+        "Task: retrieve comparable films for a movie project. "
+        "Focus on genre, tone, protagonist, hook, and plot engine. "
+        "Match story mechanics, not only surface keywords.\n\n"
+        f"PROJECT:\n{query}\n\n"
+        "KEY ELEMENTS:\n- " + "\n- ".join(extras)
+    )
+
 def pinecone_query(query: str, top_k: int = 8) -> List[Dict[str, Any]]:
     index = pinecone_index()
     namespace = os.getenv("PINECONE_NAMESPACE", "movies")
-    vector = embed_text(query)
+
+    rag_query = build_rag_query(query)
+    vector = embed_text(rag_query)
 
     result = index.query(
         vector=vector,
@@ -81,7 +140,6 @@ def pinecone_query(query: str, top_k: int = 8) -> List[Dict[str, Any]]:
         namespace=namespace,
     )
 
-    # Works for both dict-like and object-like responses
     matches = getattr(result, "matches", None)
     if matches is None and isinstance(result, dict):
         matches = result.get("matches", [])

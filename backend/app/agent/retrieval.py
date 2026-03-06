@@ -40,6 +40,48 @@ def fix_mojibake(s):
     except Exception:
         return s
 
+def expand_query(query: str) -> str:
+    q = query.lower()
+
+    extras = []
+
+    if "repeat" in q or "repeating" in q or "same night" in q or "time loop" in q:
+        extras.extend([
+            "time loop",
+            "repeating day",
+            "repeating night",
+            "temporal loop",
+            "time travel thriller",
+            "high concept thriller",
+        ])
+
+    if "detective" in q:
+        extras.extend([
+            "detective",
+            "investigation",
+            "procedural thriller",
+            "crime mystery",
+        ])
+
+    if "attack" in q or "stop an attack" in q or "prevent" in q:
+        extras.extend([
+            "prevent attack",
+            "stop catastrophe",
+            "race against time",
+        ])
+
+    if "thriller" in q:
+        extras.extend([
+            "thriller",
+            "suspense",
+            "mystery thriller",
+        ])
+
+    if not extras:
+        return query
+
+    return query + " " + " ".join(extras)
+
 def retrieve_comps(query: str, k: int = 15) -> List[Dict[str, Any]]:
     """
     Return top-k similar movies to a query string (logline/description).
@@ -48,7 +90,8 @@ def retrieve_comps(query: str, k: int = 15) -> List[Dict[str, Any]]:
     if not isinstance(query, str) or not query.strip():
         return []
 
-    q_vec = _vectorizer.transform([query])
+    expanded_query = expand_query(query)
+    q_vec = _vectorizer.transform([expanded_query])
     scores = cosine_similarity(q_vec, _matrix).ravel()
 
     # Take top-N candidates by similarity, then re-rank with a small finance-data bonus
