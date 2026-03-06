@@ -1,7 +1,7 @@
 # backend/app/main.py
 
 from __future__ import annotations
-
+from backend.app.agent.rag_llm import pinecone_query, generate_report, build_rag_query
 import json
 import os
 from pathlib import Path
@@ -17,7 +17,6 @@ from starlette.responses import Response
 
 from backend.app.agent.retrieval import retrieve_comps
 from backend.app.agent.predictive import top_buckets_by_count
-from backend.app.agent.rag_llm import pinecone_query, generate_report
 
 # ----------------------------
 # env
@@ -54,14 +53,6 @@ def json_utf8(payload: dict, status_code: int = 200) -> Response:
         content=json.dumps(payload, ensure_ascii=False),
         media_type="application/json; charset=utf-8",
         status_code=status_code,
-    )
-
-def build_rag_query(raw: str) -> str:
-    return (
-        "Task: retrieve comparable films for a movie project.\n"
-        "Focus on genre, tone, protagonist, hook, and plot engine.\n"
-        "Return films that best match the project description.\n\n"
-        f"PROJECT:\n{raw}"
     )
 
 def postfilter_matches(matches: List[Dict[str, Any]], keep: int = 6) -> List[Dict[str, Any]]:
