@@ -36,7 +36,7 @@ app.mount("/static", StaticFiles(directory=str(FRONTEND_DIR)), name="static")
 def serve_frontend():
     return FileResponse(str(FRONTEND_DIR / "index.html"))
 
-STATIC_PATH = Path(__file__).parent / "static"
+STATIC_PATH = BACKEND_DIR / "static"
 ARCH_FILE = STATIC_PATH / "architecture.png"
 
 # ----------------------------
@@ -110,10 +110,22 @@ def agent_info():
 
 @app.get("/api/model_architecture")
 def model_architecture():
-    if ARCH_FILE.exists():
-        return FileResponse(ARCH_FILE, media_type="image/png")
-    return {"error": "architecture.png not found"}
+    print("BACKEND_DIR =", BACKEND_DIR)
+    print("STATIC_PATH =", STATIC_PATH)
+    print("ARCH_FILE =", ARCH_FILE)
+    print("EXISTS =", ARCH_FILE.exists())
 
+    if ARCH_FILE.exists():
+        return FileResponse(str(ARCH_FILE), media_type="image/png")
+    return {
+        "error": "architecture.png not found",
+        "debug": {
+            "backend_dir": str(BACKEND_DIR),
+            "static_path": str(STATIC_PATH),
+            "arch_file": str(ARCH_FILE),
+            "exists": ARCH_FILE.exists(),
+        },
+    }
 # ----------------------------
 # execute (required)
 # Must return ONLY: status, error, response, steps
