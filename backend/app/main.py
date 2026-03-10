@@ -271,15 +271,18 @@ def execute(payload: ExecuteIn):
             llm_text = None
 
         steps.append(
-            {
-                "module": "llm_report",
-                "prompt": {"system": system_prompt, "user": user_prompt},
-                "response": {
-                    "llm_error": llm_error,
-                    "text_preview": (llm_text[:300] + "...") if llm_text else None,
-                },
-            }
-        )
+                    {
+                        "module": "llm_synthesis",
+                        "prompt": {
+                            "system": system_prompt,
+                            "user": user_prompt
+                        },
+                        "response": {
+                            "llm_error": llm_error,
+                            "generated_text": llm_text
+                        },
+                    }
+                )
 
         report_text = (llm_text + "\n\n---\n\n" + base_text) if llm_text else base_text
 
