@@ -287,18 +287,44 @@ def execute(payload: ExecuteIn):
 
         report_text = llm_text if llm_text else base_text
 
+        result = {
+            "status": "ok",
+            "error": None,
+            "response": report_text,
+            "steps": steps,
+        }
+
+        try:
+            save_agent_run(
+                prompt=prompt,
+                status=result["status"],
+                error=result["error"],
+                response=result["response"],
+                steps=result["steps"],
+            )
+        except Exception as log_err:
+            print("SAVE_AGENT_RUN FAILED:", repr(log_err))
+
         # IMPORTANT: return ONLY the required keys
-        return json_utf8(
-            {
-                "status": "ok",
-                "error": None,
-                "response": report_text,
-                "steps": steps,
-            }
-        )
+        return json_utf8(result)
 
     except Exception as e:
-        return json_utf8(
-            {"status": "error", "error": str(e), "response": None, "steps": []},
-            500,
-        )
+        error_result = {
+            "status": "error",
+            "error": str(e),
+            "response": None,
+            "steps": [],
+        }
+
+        try:
+            save_agent_run(
+                prompt=payload.prompt if payload and payload.prompt else "",
+                status=error_result["status"],
+                error=error_result["error"],
+                response=error_result["response"],
+                steps=error_result["steps"],
+            )
+        except Exception as log_err:
+            print("SAVE_AGENT_RUN FAILED:", repr(log_err))
+
+        return json_utf8(error_result, 500)
