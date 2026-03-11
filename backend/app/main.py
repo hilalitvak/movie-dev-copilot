@@ -285,7 +285,7 @@ def execute(payload: ExecuteIn):
                     }
                 )
 
-        report_text = (llm_text + "\n\n---\n\n" + base_text) if llm_text else base_text
+        report_text = llm_text if llm_text else base_text
 
         # IMPORTANT: return ONLY the required keys
         return json_utf8(
