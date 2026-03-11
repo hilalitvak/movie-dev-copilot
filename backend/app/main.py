@@ -184,7 +184,8 @@ def execute(payload: ExecuteIn):
                 bits.append(f"Revenue=${revenue:,.0f}")
 
             lines.append(" ".join(bits))
-
+        if not comps:
+            lines.append("No local comparable movies available.")
         lines += ["", f"ROI data available for {roi_known}/{roi_total} comps."]
         if comps_median_roi is not None:
             lines.append(f"Median ROI among comps with ROI: {comps_median_roi:.2f}")

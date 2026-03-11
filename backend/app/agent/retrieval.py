@@ -95,6 +95,9 @@ def retrieve_comps(query: str, k: int = 15) -> List[Dict[str, Any]]:
     Return top-k similar movies to a query string (logline/description).
     Output is JSON-serializable list of dicts.
     """
+    if _df is None or _vectorizer is None or _matrix is None:
+        return []
+
     if not isinstance(query, str) or not query.strip():
         return []
 
