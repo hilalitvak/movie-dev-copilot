@@ -100,9 +100,21 @@ def agent_info():
                 "prompt": "Thriller about a detective repeating the same night to stop an attack. Budget: $12M",
                 "full_response": "Production Report\n1) Logline interpretation\nA high-concept time-loop thriller about a detective reliving the same night to stop an imminent attack.\n\n2) Comparable films\nPredestination, Timecrimes, Groundhog Day, Looper.\n\n3) Budget / ROI\nProjects in the $5–15M range have median ROI ≈1.82.\n\n4) Risks\nNiche concept, marketing dependency, distribution strategy.",
                 "steps": [
-                    {"module": "retrieval_local_comps"},
-                    {"module": "rag_pinecone"},
-                    {"module": "llm_report"}
+                    {
+                        "module": "retrieval_local_comps",
+                        "prompt": {},
+                        "response": {}
+                    },
+                    {
+                        "module": "rag_pinecone",
+                        "prompt": {},
+                        "response": {}
+                    },
+                    {
+                        "module": "llm_synthesis",
+                        "prompt": {},
+                        "response": {}
+                    }
                 ]
             }
         ]

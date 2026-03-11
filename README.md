@@ -1,279 +1,115 @@
-
 # 🎬 Movie Development Copilot  
-### Data-Driven Decision Support for Independent Film Producers
+### Autonomous AI Agent for Film Production Intelligence  
 
 ---
 
-## 🚩 The Greenlight Problem
+## 🚩 The Greenlight Problem  
 
-Film development decisions are high-risk and often intuition-driven.
+Early film development decisions are high-risk and often rely on intuition rather than structured data.
 
-Independent producers lack:
-- Reliable budget benchmarks  
+Independent producers typically lack:
+
+- Reliable budget feasibility benchmarks  
 - Historical ROI validation  
-- Structured comparable film analysis  
-- Data-backed talent recommendations  
+- Structured comparable film discovery  
+- Data-driven talent alignment  
 
 Creative vision exists.  
-Production intelligence is missing.
+Production intelligence is missing.  
 
 ---
 
-## 💡 Our Solution
+## 💡 Our Solution  
 
 **Movie Development Copilot** is an autonomous AI agent that transforms a creative concept into structured production intelligence.
 
-Input:
-> Logline + Genre + Budget Constraints  
+### Input  
 
-Output:
-- 🎥 Comparable Films  
-- 💰 Budget Feasibility Analysis  
-- 📈 ROI Benchmarking  
-- 🎬 Talent Shortlist  
-- 📄 Structured Production Report  
-
----
-
-# 🧠 System Architecture
-
-The system follows a four-module architecture:
-
-### 1️⃣ Intelligent Intent  
-Extracts:
+- Logline  
 - Genre  
-- Themes  
-- Budget tier  
-- Production signals  
+- Budget Constraints  
 
-### 2️⃣ Semantic Retrieval  
-Uses Pinecone vector search to retrieve:
-- 10–20 historically similar films  
-- Genre-aligned comps  
-- Budget-tier matches  
+### Output  
 
-### 3️⃣ Predictive Core  
-Deterministic code-based analysis:
-- Budget validation  
-- Revenue percentile analysis  
-- ROI benchmarking  
-
-### 4️⃣ Dynamic Synthesis  
-LLM-based structured report generation.
+- Comparable Films Analysis  
+- Budget Feasibility Validation  
+- ROI Benchmark Estimation  
+- Talent Alignment Suggestions  
+- Structured Production Report  
 
 ---
 
-# 📊 Data Foundation
+## 🧠 Agent Architecture  
 
-Primary dataset:
-**The Movies Dataset (Kaggle)**  
-- Metadata  
-- Cast & Crew  
-- Genres & Keywords  
-- Budget & Revenue  
-- Ratings  
+The system follows a four-stage reasoning pipeline:
 
-Infrastructure:
-- Supabase  
-- Pinecone  
-- LLMod.ai  
-- Render  
+1. **Intelligent Intent**  
+   LLM extracts production signals such as genre, themes, narrative scope, and budget tier.
 
----
+2. **Semantic Retrieval (RAG)**  
+   Pinecone vector search retrieves historically similar films and genre-aligned comparables.
 
-# 🔌 API Specification
+3. **Predictive Core**  
+   Deterministic financial analytics validate budget feasibility and estimate ROI benchmarks.
 
-## GET `/api/team_info`
-
-Returns team metadata.
-
-```json
-{
-  "group_batch_order_number": "3_9",
-  "team_name": "Movie Development Copilot",
-  "students": [
-    { "name": "Student A", "email": "a@..." },
-    { "name": "Student B", "email": "b@..." },
-    { "name": "Student C", "email": "c@..." }
-  ]
-}
-```
+4. **Dynamic Synthesis**  
+   LLM generates a concise structured production intelligence report.
 
 ---
 
-## GET `/api/agent_info`
+## 📊 Data Foundation  
 
-Returns:
-- description  
-- purpose  
-- prompt_template  
-- prompt_examples  
+Primary dataset: **The Movies Dataset (Kaggle)**  
+
+Includes metadata, cast & crew, genres, keywords, budget, revenue, ratings, and popularity signals.
 
 ---
 
-## GET `/api/model_architecture`
+## 🏗 Infrastructure  
 
-Returns:
-- Content-Type: image/png  
-- PNG architecture diagram  
-- Module names consistent with execution logs  
-
----
-
-## POST `/api/execute`
-
-Main execution endpoint.
-
-### Request
-
-```json
-{
-  "prompt": "Thriller about a detective repeating the same night to stop an attack. Budget: $12M."
-}
-```
-
-### Success Response
-
-```json
-{
-  "status": "ok",
-  "error": null,
-  "response": "Structured production intelligence report...",
-  "steps": [
-    {
-      "module": "Intelligent Intent",
-      "prompt": {},
-      "response": {}
-    },
-    {
-      "module": "Semantic Retrieval",
-      "prompt": {},
-      "response": {}
-    },
-    {
-      "module": "Dynamic Synthesis",
-      "prompt": {},
-      "response": {}
-    }
-  ]
-}
-```
-
-### Error Response
-
-```json
-{
-  "status": "error",
-  "error": "Human-readable error description",
-  "response": null,
-  "steps": []
-}
-```
+- **Supabase** — agent execution logging and structured storage  
+- **Pinecone** — semantic vector retrieval  
+- **LLMod.ai** — embeddings and reasoning LLM  
+- **Render** — backend deployment  
 
 ---
 
-# 🏗 Agent Design Principles
+## 🔌 API Endpoints  
 
-## Optimized LLM Usage
-
-The system minimizes LLM calls:
-
-- Financial calculations are deterministic  
-- Percentiles are precomputed  
-- Embeddings are stored  
-- LLM is used only for reasoning and synthesis  
-
-This ensures:
-- Low latency  
-- Budget efficiency  
-- Controlled $13 LLMod.ai usage  
+- `GET /api/team_info` — returns team metadata  
+- `GET /api/agent_info` — returns agent description and usage  
+- `GET /api/model_architecture` — returns architecture diagram (PNG)  
+- `POST /api/execute` — main agent execution endpoint  
 
 ---
 
-# 🧩 Prompt Template (Internal Format)
+## ⚙️ Running Locally  
 
-All user prompts are transformed into:
+To run the project locally, configure the required environment variables for external services (database, vector search, and LLM provider), then install dependencies:
+- pip install -r requirements.txt
+Run the backend:
+- uvicorn backend.app.main:app --reload
 
-```
-You are a film production intelligence agent.
-
-User Concept:
-{logline}
-
-Genre:
-{genre}
-
-Budget:
-{budget}
-
-Tasks:
-1. Extract production signals.
-2. Retrieve comparable films.
-3. Validate budget feasibility.
-4. Estimate ROI benchmark.
-5. Recommend aligned talent.
-6. Generate structured report.
-```
 
 ---
 
-# 🔄 Execution Flow
+## 🖥 Frontend  
 
-When `/api/execute` is called:
+A minimal web interface enables:
 
-1. Intent Parsing (LLM)
-2. Vector Retrieval (Pinecone)
-3. Financial Computation (Python logic)
-4. Talent Filtering (Database queries)
-5. Report Generation (LLM)
-
-All LLM calls are logged in `steps`.
+- entering a prompt  
+- running the agent  
+- viewing the final response  
+- inspecting execution steps  
 
 ---
 
-# 🖥 Frontend
+## 🚀 Deployment  
 
-Minimal web interface includes:
-- Prompt textarea  
-- Run Agent button  
-- Final response display  
-- Execution trace display  
+Render URL: `https://movie-dev-copilot.onrender.com/`  
+
+GitHub Repository: `https://github.com/hilalitvak/movie-dev-copilot`  
 
 ---
 
-# 🚀 Deployment
-
-- Platform: Render  
-- Database: Supabase  
-- Vector DB: Pinecone  
-- LLM Provider: LLMod.ai  
-
----
-
-# 📈 Roadmap
-
-Phase 1:
-✔ Comparable analysis  
-✔ Budget validation  
-
-Phase 2:
-Revenue prediction ML model  
-
-Phase 3:
-Full production intelligence platform  
-
----
-
-# 📦 Submission
-
-Render URL:  
-{your_render_url}
-
-GitHub Repo:  
-{your_repo_url}
-
----
-
-Built for the Autonomous AI Agents Course  
-Instructor: Idan Hahn  
-Deadline: 01/03/2026
+Built for the **Autonomous AI Agents Course**
