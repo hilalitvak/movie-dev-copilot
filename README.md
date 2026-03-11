@@ -34,26 +34,24 @@ Production intelligence is missing.
 - Comparable Films Analysis  
 - Budget Feasibility Validation  
 - ROI Benchmark Estimation  
-- Talent Alignment Suggestions  
 - Structured Production Report  
 
 ---
 
 ## 🧠 Agent Architecture  
 
-The system follows a four-stage reasoning pipeline:
+The system follows a three-stage execution pipeline:
 
-1. **Intelligent Intent**  
-   LLM extracts production signals such as genre, themes, narrative scope, and budget tier.
+1. **retrieval_local_comps**  
+   Retrieves local comparable film statistics and summarizes available ROI coverage.
 
-2. **Semantic Retrieval (RAG)**  
-   Pinecone vector search retrieves historically similar films and genre-aligned comparables.
+2. **rag_pinecone**  
+   Uses Pinecone vector search to retrieve semantically similar comparable films based on story mechanics, genre, tone, and budget cues.
 
-3. **Predictive Core**  
-   Deterministic financial analytics validate budget feasibility and estimate ROI benchmarks.
+3. **llm_synthesis**  
+   Generates a concise production-style report using retrieved comparable films and historical ROI benchmarks.
 
-4. **Dynamic Synthesis**  
-   LLM generates a concise structured production intelligence report.
+These module names are identical to the execution trace returned by the API.
 
 ---
 
@@ -61,7 +59,13 @@ The system follows a four-stage reasoning pipeline:
 
 Primary dataset: **The Movies Dataset (Kaggle)**  
 
-Includes metadata, cast & crew, genres, keywords, budget, revenue, ratings, and popularity signals.
+Includes:
+
+- metadata  
+- cast & crew  
+- genres and keywords  
+- budget and revenue  
+- ratings and popularity signals  
 
 ---
 
@@ -77,7 +81,7 @@ Includes metadata, cast & crew, genres, keywords, budget, revenue, ratings, and 
 ## 🔌 API Endpoints  
 
 - `GET /api/team_info` — returns team metadata  
-- `GET /api/agent_info` — returns agent description and usage  
+- `GET /api/agent_info` — returns agent description, purpose, prompt template, and example execution  
 - `GET /api/model_architecture` — returns architecture diagram (PNG)  
 - `POST /api/execute` — main agent execution endpoint  
 
@@ -85,10 +89,13 @@ Includes metadata, cast & crew, genres, keywords, budget, revenue, ratings, and 
 
 ## ⚙️ Running Locally  
 
-To run the project locally, configure the required environment variables for external services (database, vector search, and LLM provider), then install dependencies:
-- pip install -r requirements.txt
+To run the project locally, configure the required environment variables for external services, then install dependencies:
+
+```bash
+pip install -r requirements.txt
+
 Run the backend:
-- uvicorn backend.app.main:app --reload
+uvicorn backend.app.main:app --reload
 
 
 ---
