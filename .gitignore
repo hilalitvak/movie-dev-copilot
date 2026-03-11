@@ -28,6 +28,7 @@ data/processed/
 *.csv
 *.parquet
 !data/processed/movies_clean.parquet
+!data/processed/roi_aggregates.csv
 # ======================
 # Logs
 # ======================
