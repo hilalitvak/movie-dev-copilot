@@ -1,8 +1,7 @@
 # backend/app/agent/retrieval.py
-# TF-IDF retrieval for comps using doc_text from data/processed/movies_clean.parquet
-
 from __future__ import annotations
-import numpy as np 
+import os
+import numpy as np
 from pathlib import Path
 from typing import List, Dict, Any
 
@@ -11,24 +10,33 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-ROOT = Path(__file__).resolve().parents[3]  # project root
+ROOT = Path(__file__).resolve().parents[3]
 PARQUET_PATH = ROOT / "data" / "processed" / "movies_clean.parquet"
 
+_df = None
+_doc = None
+_vectorizer = None
+_matrix = None
 
-# Load once (module import time)
-_df = pd.read_parquet(PARQUET_PATH)
+ENABLE_LOCAL_RETRIEVAL = os.getenv("ENABLE_LOCAL_RETRIEVAL", "false").lower() == "true"
 
-# Ensure doc_text exists and is string
-_doc = _df["doc_text"].fillna("").astype(str)
+if ENABLE_LOCAL_RETRIEVAL and PARQUET_PATH.exists():
+    try:
+        _df = pd.read_parquet(PARQUET_PATH)
+        _doc = _df["doc_text"].fillna("").astype(str)
 
-# Build TF-IDF index once
-_vectorizer = TfidfVectorizer(
-    stop_words="english",
-    max_features=60000,
-    ngram_range=(1, 2),
-    min_df=2,
-)
-_matrix = _vectorizer.fit_transform(_doc)
+        _vectorizer = TfidfVectorizer(
+            stop_words="english",
+            max_features=60000,
+            ngram_range=(1, 2),
+            min_df=2,
+        )
+        _matrix = _vectorizer.fit_transform(_doc)
+    except Exception:
+        _df = None
+        _doc = None
+        _vectorizer = None
+        _matrix = None
 
 def fix_mojibake(s):
     if not isinstance(s, str):
