@@ -27,7 +27,7 @@ data/raw/
 data/processed/
 *.csv
 *.parquet
-
+!data/processed/movies_clean.parquet
 # ======================
 # Logs
 # ======================
