@@ -15,10 +15,19 @@ def get_supabase():
 def save_agent_run(prompt, status, error, response, steps):
     sb = get_supabase()
 
-    sb.table("agent_runs").insert({
+    payload = {
         "prompt": prompt,
         "status": status,
         "error": error,
         "response": response,
         "steps_json": steps
-    }).execute()
+    }
+
+    print("SUPABASE URL EXISTS:", bool(os.getenv("SUPABASE_URL")))
+    print("SUPABASE KEY EXISTS:", bool(os.getenv("SUPABASE_KEY")))
+    print("PAYLOAD:", payload)
+
+    res = sb.table("agent_runs").insert(payload).execute()
+
+    print("SUPABASE INSERT RESULT:", res)
+    return res
