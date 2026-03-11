@@ -6,7 +6,7 @@ import json
 import os
 from pathlib import Path
 from typing import Any, Dict, List
-
+from backend.app.agent.supabase_store import save_agent_run
 import numpy as np
 from dotenv import load_dotenv
 from fastapi import FastAPI
